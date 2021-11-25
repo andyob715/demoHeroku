@@ -1,53 +1,32 @@
+function calchours()
+{
+    let student_class_input = document.getElementById("student_class_input").value
+    let exampleDataList2 = document.getElementById("exampleDataList2").value
+    let exampleDataList3 = document.getElementById("exampleDataList3").value
+    let daysform = document.getElementById("daysform").value
     
-// MAKE FUNCTIONS TO CREATE THE CHARTS
+    console.log("Student Input",student_class_input)
+    console.log("exampleDataList2",dropdown2)
+    console.log("exampleDataList3",dropdown3)
+    console.log("daysform",daysform)
 
-
-function barchart(data){
-    
-    //clean data
-    my_x = data.map(x => x.Country)
-    my_y = data.map(y => y.Emission_CO2)
-
-    //using plotly
-    var plot_data = [
-        {
-            x: my_x,
-            y: my_y,
-            type: 'bar'
-        }
-    ];
-
-    var layout = {
-        xaxis: {automargin: true},
-        yaxis: {automargin: true}
-    }
-
-    Plotly.newPlot('chart1', plot_data, layout, { 
-        responsive: true});
-
-}
-
-
-
-//PUT ALL GRAPHS TOGETHER AND MAKE API CALL
-
-function getData(){
-
-    //grab the data from the endpoint you created in flask
-    d3.json("/api/data").then((json) => {
-
-        //pass that data into the functions to create the charts
-
-        barchart(json)
-
-        //scatterplot(json)
-
-
-    })// end d3 call
-
-}// end function getData
-
-
-// INITIATE THE getData FUNCTION WHEN PAGE LOADS
-getData()
-
+    fetch("/index", {
+        method: "POST", 
+        body: JSON.stringify(
+            {
+            student_class_input: student_class_input,
+            input_2: exampleDataList2,
+            input_3: exampleDataList3,
+            input_4: daysform
+            }),
+        headers:
+            {
+            "Content-type":"application/json;charset=UTF-8"
+            } 
+}).then(resp=>{
+    return resp.json()
+    }).then(resp=>{
+    console.log(resp)
+    document.getElementById("prediction").innerHTML=resp.Prediction
+    console.log(resp.Prediction)}
+    )}
